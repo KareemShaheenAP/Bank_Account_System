@@ -46,8 +46,7 @@ namespace Bank_Account_System
             AccountNumber = accountNumber;
             OwnerName = ownerName;
             CreatedDate = createdDate;
-            Balance = balance;
-            Console.WriteLine($"Account Created {accountType}\t{accountNumber}\t{ownerName}\t{createdDate}\t{balance}\n===================");
+            Balance = balance;      
         }
         public virtual void Deposit(double amount)
         {
@@ -87,7 +86,12 @@ namespace Bank_Account_System
     {
         public SavingAccount(string accountType, string accountNumber, string ownerName, DateTime createdDate, double balance) : base(accountType,accountNumber, ownerName, createdDate, balance)
         {
-
+            var duration = (DateTime.UtcNow.Year - createdDate.Year) * 12 + (DateTime.UtcNow.Month - CreatedDate.Month);
+            if (duration > 0)
+            {
+                Balance += Balance * .05 * duration;
+            }
+            Console.WriteLine($"Account Created {AccountType}\tAccount Number:{AccountNumber}\tOwner Name:{OwnerName}\tCreated Date:{CreatedDate}\tBalance:{Balance} with interest:{balance * .05 * duration}\n===================");
         }
         public override void Deposit(double amount)
         {
@@ -100,20 +104,13 @@ namespace Bank_Account_System
             {
                 Console.WriteLine("Deposit amount must be positive.");
             }
-
-            var duration = DateTime.UtcNow.Month - CreatedDate.Month;
-            if (duration > 0)
-            {
-                Balance += Balance * .50 * duration;
-                Console.WriteLine($"Deposited {amount:C} to {OwnerName}'s account. New balance: {Balance}\n===================");
-            }
         }
     }
     public class CurrentAccount : BankAccount
     {
         public CurrentAccount(string accountType, string accountNumber, string ownerName, DateTime createdDate, double balance) : base(accountType, accountNumber, ownerName, createdDate, balance)
         {
-
+            Console.WriteLine($"Account Created {AccountType}\tAccount Number:{AccountNumber}\tOwner Name:{OwnerName}\tCreated Date:{CreatedDate}\tBalance:{Balance}\n===================");
         }
         public override void Withdraw(double amount)
         {
@@ -131,6 +128,7 @@ namespace Bank_Account_System
     internal class Program
     {
         public static List<BankAccount> accounts = new List<BankAccount>();
+        
         static void Main(string[] args)
         {
             while (true)
@@ -138,6 +136,7 @@ namespace Bank_Account_System
                 string _accountNumber = "";
                 string _ownerName = "";
                 string accno = "";
+                DateTime creationDate;
                 Console.WriteLine("=== Account Menu ===");
                 Console.WriteLine("1. Create account");
                 Console.WriteLine("2. Deposit money");
@@ -162,14 +161,16 @@ namespace Bank_Account_System
                         _ownerName = Console.ReadLine();
                         Console.WriteLine("Enter Initial Balance");
                         var balanceChk = double.TryParse(Console.ReadLine(), out double balance);
+                        Console.WriteLine("Creation Date Ex:yyyy,MM,dd");
+                        creationDate = DateTime.Parse(Console.ReadLine());
                         switch (accountType)
                         {
                             case AccountType.Saving:
-                                SavingAccount savingAccount = new SavingAccount("Saving",_accountNumber ?? "", _ownerName ?? "", DateTime.UtcNow, balance);
+                                SavingAccount savingAccount = new SavingAccount("Saving",_accountNumber ?? "", _ownerName ?? "", creationDate, balance);
                                 accounts.Add(savingAccount);
                                 break;
                             case AccountType.Current:
-                                CurrentAccount currentAccount = new CurrentAccount("Current",_accountNumber ?? "", _ownerName ?? "", DateTime.UtcNow, balance);
+                                CurrentAccount currentAccount = new CurrentAccount("Current",_accountNumber ?? "", _ownerName ?? "", creationDate, balance);
                                 accounts.Add(currentAccount);
                                 break;
                             default:
@@ -220,7 +221,6 @@ namespace Bank_Account_System
                         return;
                 }
             }
-            
         }
     }
 }
