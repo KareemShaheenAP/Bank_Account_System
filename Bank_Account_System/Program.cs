@@ -20,16 +20,16 @@ namespace Bank_Account_System
     {
         
         public string AccountNumber { get; }
-        protected string AccountType { get; set; }
+        //protected string AccountType { get; set; }
         protected string OwnerName { get; }
         protected DateTime CreatedDate { get; }
         protected double Balance { get; set; }
-        public BankAccount(string accountType, string accountNumber, string ownerName, DateTime createdDate, double balance)
+        public BankAccount(string accountNumber, string ownerName, DateTime createdDate, double balance)
         {
-            if (string.IsNullOrEmpty(accountType))
-            {
-                throw new ArgumentNullException(nameof(accountType));
-            }
+            //if (string.IsNullOrEmpty(accountType))
+            //{
+            //    throw new ArgumentNullException(nameof(accountType));
+            //}
             if (string.IsNullOrEmpty(accountNumber))
             {
                 throw new ArgumentNullException(nameof(accountNumber));
@@ -42,7 +42,7 @@ namespace Bank_Account_System
             {
                 throw new ArgumentException("Balance cannot be negative");
             }
-            AccountType = accountType;
+            //AccountType = accountType;
             AccountNumber = accountNumber;
             OwnerName = ownerName;
             CreatedDate = createdDate;
@@ -74,7 +74,7 @@ namespace Bank_Account_System
         }
         public void DisplayAccountInfo()
         {
-            Console.WriteLine($"Account Type: {AccountType}");
+            //Console.WriteLine($"Account Type: {AccountType}");
             Console.WriteLine($"Account Number: {AccountNumber}");
             Console.WriteLine($"Owner Name: {OwnerName}");
             Console.WriteLine($"Created Date: {CreatedDate}");
@@ -84,14 +84,14 @@ namespace Bank_Account_System
     }
     public class SavingAccount : BankAccount
     {
-        public SavingAccount(string accountType, string accountNumber, string ownerName, DateTime createdDate, double balance) : base(accountType,accountNumber, ownerName, createdDate, balance)
+        public SavingAccount(string accountNumber, string ownerName, DateTime createdDate, double balance) : base(accountNumber, ownerName, createdDate, balance)
         {
             var duration = (DateTime.UtcNow.Year - createdDate.Year) * 12 + (DateTime.UtcNow.Month - CreatedDate.Month);
             if (duration > 0)
             {
                 Balance += Balance * .05 * duration;
             }
-            Console.WriteLine($"Account Created {AccountType}\tAccount Number:{AccountNumber}\tOwner Name:{OwnerName}\tCreated Date:{CreatedDate}\tBalance:{Balance} with interest:{balance * .05 * duration}\n===================");
+            Console.WriteLine($"Saving Account Created \tAccount Number:{AccountNumber}\tOwner Name:{OwnerName}\tCreated Date:{CreatedDate}\tBalance:{Balance} with interest:{balance * .05 * duration}\n===================");
         }
         public override void Deposit(double amount)
         {
@@ -108,9 +108,9 @@ namespace Bank_Account_System
     }
     public class CurrentAccount : BankAccount
     {
-        public CurrentAccount(string accountType, string accountNumber, string ownerName, DateTime createdDate, double balance) : base(accountType, accountNumber, ownerName, createdDate, balance)
+        public CurrentAccount(string accountNumber, string ownerName, DateTime createdDate, double balance) : base(accountNumber, ownerName, createdDate, balance)
         {
-            Console.WriteLine($"Account Created {AccountType}\tAccount Number:{AccountNumber}\tOwner Name:{OwnerName}\tCreated Date:{CreatedDate}\tBalance:{Balance}\n===================");
+            Console.WriteLine($"Current Account Created \tAccount Number:{AccountNumber}\tOwner Name:{OwnerName}\tCreated Date:{CreatedDate}\tBalance:{Balance}\n===================");
         }
         public override void Withdraw(double amount)
         {
@@ -166,11 +166,11 @@ namespace Bank_Account_System
                         switch (accountType)
                         {
                             case AccountType.Saving:
-                                SavingAccount savingAccount = new SavingAccount("Saving",_accountNumber ?? "", _ownerName ?? "", creationDate, balance);
+                                SavingAccount savingAccount = new SavingAccount(_accountNumber ?? "", _ownerName ?? "", creationDate, balance);
                                 accounts.Add(savingAccount);
                                 break;
                             case AccountType.Current:
-                                CurrentAccount currentAccount = new CurrentAccount("Current",_accountNumber ?? "", _ownerName ?? "", creationDate, balance);
+                                CurrentAccount currentAccount = new CurrentAccount(_accountNumber ?? "", _ownerName ?? "", creationDate, balance);
                                 accounts.Add(currentAccount);
                                 break;
                             default:
